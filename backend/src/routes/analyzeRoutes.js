@@ -22,6 +22,38 @@ router.post("/", (req, res) => {
     warningSigns.push("Suspicious Request for Sensitive Information");
   }
 
+  if (text.includes("click this link") || text.includes("visit this website")) {
+    warningSigns.push("Suspicious Link or Website");
+  }
+
+  if (text.includes("pay immediately") || text.includes("send money") || text.includes("urgent payment")) {
+    warningSigns.push("Suspicious Financial Request");
+  } 
+
+  if (text.includes("too good to be true") || text.includes("guaranteed")) {
+    warningSigns.push("Unrealistic Promises");
+  }
+
+  if (text.includes("free gift") || text.includes("free trial")) {
+    warningSigns.push("Suspicious Free Offer");
+  }
+
+  if (text.includes("limited time offer") || text.includes("exclusive deal")) {
+    warningSigns.push("Suspicious Marketing Tactic");
+  }
+
+  if (text.includes("click here to claim") || text.includes("download now")) {
+    warningSigns.push("Suspicious Call to Action");
+  }
+
+  if (text.includes("urgent response required") || text.includes("immediate action needed")) {
+    warningSigns.push("Suspicious Urgency");
+  }
+
+  if (text.includes("verify your account") || text.includes("confirm your identity")) {
+    warningSigns.push("Suspicious Account Verification Request from non official source");
+  }
+
   //Risk level
   let risklevel;
 

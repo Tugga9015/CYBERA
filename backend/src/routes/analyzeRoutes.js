@@ -18,6 +18,10 @@ router.post("/", (req, res) => {
     warningSigns.push("Urgency Pressure");
   }
 
+  if (text.includes("share your password")|| text.includes("send your pin") || text.includes("Verification code") ) {
+    warningSigns.push("Suspicious Request for Sensitive Information");
+  }
+
   //Risk level
   let risklevel;
 

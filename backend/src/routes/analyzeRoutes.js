@@ -6,6 +6,13 @@ const router = express.Router();
 router.post("/", (req, res) => {
   const { message } = req.body;
 
+  if (typeof message !== "string" || !message.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide a valid message to analyze.",
+    });
+  }
+
   const text = message.toLowerCase();
 
   const warningSigns = [];
@@ -18,7 +25,11 @@ router.post("/", (req, res) => {
     warningSigns.push("Urgency Pressure");
   }
 
-  if (text.includes("share your password")|| text.includes("send your pin") || text.includes("Verification code") ) {
+  if (
+    text.includes("share your password") ||
+    text.includes("send your pin") ||
+    text.includes("verification code")
+  ) {
     warningSigns.push("Suspicious Request for Sensitive Information");
   }
 
@@ -26,9 +37,13 @@ router.post("/", (req, res) => {
     warningSigns.push("Suspicious Link or Website");
   }
 
-  if (text.includes("pay immediately") || text.includes("send money") || text.includes("urgent payment")) {
+  if (
+    text.includes("pay immediately") ||
+    text.includes("send money") ||
+    text.includes("urgent payment")
+  ) {
     warningSigns.push("Suspicious Financial Request");
-  } 
+  }
 
   if (text.includes("too good to be true") || text.includes("guaranteed")) {
     warningSigns.push("Unrealistic Promises");
@@ -46,12 +61,20 @@ router.post("/", (req, res) => {
     warningSigns.push("Suspicious Call to Action");
   }
 
-  if (text.includes("urgent response required") || text.includes("immediate action needed")) {
+  if (
+    text.includes("urgent response required") ||
+    text.includes("immediate action needed")
+  ) {
     warningSigns.push("Suspicious Urgency");
   }
 
-  if (text.includes("verify your account") || text.includes("confirm your identity")) {
-    warningSigns.push("Suspicious Account Verification Request from non official source");
+  if (
+    text.includes("verify your account") ||
+    text.includes("confirm your identity")
+  ) {
+    warningSigns.push(
+      "Suspicious Account Verification Request from non official source",
+    );
   }
 
   //Risk level
@@ -68,14 +91,14 @@ router.post("/", (req, res) => {
   //Explanation
   let explanation;
 
-  if (risklevel === "No obvious warning signs") {
-    explanation = "No known warning signs were detected by the current checks.";
-  } else if (risklevel === "Caution") {
+  if (warningSigns.length === 0) {
     explanation =
-      "The message contains a warning sign that deserves attention.";
+      "Our current checks did not detect any known warning signs. This does not guarantee that the message is safe.";
   } else {
     explanation =
-      "The message contains multiple warning signs, commomnly associated with scams, indicating a high level of suspicion. Please be very cautious.";
+      "We detected the following warning Signs:" +
+      warningSigns.join(",") +
+      ". These signs may indicate a scam, so verify the message before taking action.";
   }
 
   // Check whether a message was provided
@@ -86,13 +109,28 @@ router.post("/", (req, res) => {
     });
   }
 
-  // Temporary response while we build the analysis logic
-  res.status(200).json({
+  // Recommendation
+  let recommendation;
+
+  if (warningSigns.length === 0) {
+    recommendation =
+      "Stay alert. No detected warning signs does not guarantee that the message is safe.";
+  } else if (warningSigns.length === 1) {
+    recommendation =
+      "Be cautious. Verify the message and its source before taking any action.";
+  } else {
+    recommendation =
+      "Be cautious. Do not respond to the message and report it to the appropriate authorities.";
+  }
+
+  // Send the response
+  return res.status(200).json({
     success: true,
     submittedMessage: message,
     warningSigns: warningSigns,
-    risklevel: risklevel,
+    riskLevel: risklevel,
     explanation: explanation,
+    recommendation: recommendation,
   });
 });
 

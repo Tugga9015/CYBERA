@@ -120,7 +120,7 @@ router.post("/", (req, res) => {
       "Be cautious. Verify the message and its source before taking any action.";
   } else {
     recommendation =
-      "Be cautious. Do not respond to the message and report it to the appropriate authorities.";
+      "Be cautious. Do not respond to the message or report it to the appropriate authorities.";
   }
 
   // Send the response

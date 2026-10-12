@@ -13,7 +13,11 @@ router.post("/", (req, res) => {
     });
   }
 
-  const text = message.toLowerCase();
+  const text = message
+   .toLowerCase()
+  .replace(/[.,!?;:]+/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
 
   const warningSigns = [];
 
@@ -33,7 +37,10 @@ router.post("/", (req, res) => {
     warningSigns.push("Suspicious Request for Sensitive Information");
   }
 
-  if (text.includes("click this link") || text.includes("visit this website")) {
+  if (
+    text.includes("click this link") || 
+    text.includes("visit this website")
+  ) {
     warningSigns.push("Suspicious Link or Website");
   }
 

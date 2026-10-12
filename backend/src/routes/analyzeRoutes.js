@@ -6,15 +6,8 @@ const router = express.Router();
 router.post("/", (req, res) => {
   const { message } = req.body;
 
-  if (typeof message !== "string" || !message.trim()) {
-    return res.status(400).json({
-      success: false,
-      message: "Please provide a valid message to analyze.",
-    });
-  }
-
   const text = message
-   .toLowerCase()
+  .toLowerCase()
   .replace(/[.,!?;:]+/g, " ")
   .replace(/\s+/g, " ")
   .trim();
@@ -104,7 +97,7 @@ router.post("/", (req, res) => {
   } else {
     explanation =
       "We detected the following warning Signs:" +
-      warningSigns.join(",") +
+      warningSigns.join(", ") +
       ". These signs may indicate a scam, so verify the message before taking action.";
   }
 
